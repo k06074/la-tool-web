@@ -1,0 +1,8 @@
+*.svg
+*.otf
+*.png
+*.css
+*.json
+*.wav
+
+next-env.d.ts
