@@ -14,14 +14,13 @@ export interface SearchDetailOption {
   MinValue: number | null;
   MaxValue: number | null;
 }
-[];
 
 export interface GetItemsProps {
   ItemLevelMin?: number;
   ItemLevelMax?: number;
   ItemGradeQuality?: number | null;
-  SkillOptions?: SearchDetailOption;
-  EtcOptions?: SearchDetailOption;
+  SkillOptions?: SearchDetailOption[];
+  EtcOptions?: SearchDetailOption[];
   Sort?: SORT;
   CategoryCode?: number;
   CharacterClass?: string;

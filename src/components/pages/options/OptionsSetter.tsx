@@ -31,7 +31,7 @@ export default function OptionsSetter() {
         MinValue: point,
         MaxValue: null,
       },
-    ] as SearchDetailOption;
+    ] as SearchDetailOption[];
     setSearchOption((prev) => {
       return {
         ...prev,

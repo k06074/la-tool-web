@@ -10,7 +10,7 @@ export const searchOptionAtom = atomWithReset<GetItemsProps>({
       MinValue: null,
       MaxValue: null,
     },
-  ] as SearchDetailOption,
+  ] as SearchDetailOption[],
   CategoryCode: 200010,
   ItemTier: 4,
   PageNo: 1,

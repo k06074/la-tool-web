@@ -15,7 +15,6 @@ export const getItems = async (itemsProps: GetItemsProps): Promise<any> => {
   );
 
   if (response.status === 429) {
-    console.log(429);
     return undefined;
   }
 
