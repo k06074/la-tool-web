@@ -1,9 +1,11 @@
-import { useAtom } from "jotai/react";
+import { useAtom, useSetAtom } from "jotai/react";
 import { useEffect, useState } from "react";
 import { getItems } from "@@/api/getApi";
+import { accItems } from "@@/atoms/accItems";
 import { searchOptionAtom } from "@@/atoms/searchOption";
 import AccSelect from "@@/components/pages/options/AccSelect";
 import OptionSelect from "@@/components/pages/options/OptionSelect";
+import OptionValueSelect from "@@/components/pages/options/OptionValueSelect";
 import { Button } from "@@/components/ui/button";
 import { Input } from "@@/components/ui/input";
 import { Label } from "@@/components/ui/label";
@@ -14,8 +16,10 @@ export default function OptionsSetter() {
   const [accValue, setAccValue] = useState(0);
   const [quality, setQuality] = useState(67);
   const [point, setPoint] = useState(4);
-  const [optionValue, setOptionValue] = useState(0);
+  const [optionValue, setOptionValue] = useState<number>(0);
   const [searchOption, setSearchOption] = useAtom(searchOptionAtom);
+  const [optionValueValue, setOptionValueValue] = useState("");
+  const setItems = useSetAtom(accItems);
 
   useEffect(() => {
     const etcOptionList = [
@@ -45,11 +49,35 @@ export default function OptionsSetter() {
   useEffect(() => {
     if (accValue) {
       setOptionValue(0);
+      setOptionValueValue("");
     }
   }, [accValue]);
 
-  const handleClick = () => {
-    getItems(searchOption);
+  useEffect(() => {
+    if (optionValue) {
+      setOptionValueValue("");
+    }
+  }, [optionValue]);
+
+  const handleClick = async () => {
+    const items = await getItems(searchOption);
+    const convertedItems = items.Items.map((i) => {
+      return {
+        name: i.Name,
+        grade: i.Grade,
+        auctionInfo: {
+          buyPrice: i.AuctionInfo.BuyPrice,
+          endDate: i.AuctionInfo.EndDate,
+          tradeAmount: i.AuctionInfo.TradeAllowCount,
+        },
+        arkPoint: i.Options[0].Value,
+        itemOption: {
+          optionName: i.Options[1].OptionName,
+          value: i.Options[1].Value,
+        },
+      } as Item;
+    });
+    setItems(convertedItems);
   };
 
   return (
@@ -89,6 +117,11 @@ export default function OptionsSetter() {
         optionValue={optionValue}
         setOptionValue={setOptionValue}
         accValue={accValue}
+      />
+      <OptionValueSelect
+        optionValueValue={optionValueValue}
+        setOptionValueValue={setOptionValueValue}
+        optionValue={optionValue}
       />
       <Button
         className="self-end"

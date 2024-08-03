@@ -30,3 +30,22 @@ export interface GetItemsProps {
   PageNo?: number;
   SortCondition?: SORT_CONDITION;
 }
+
+export interface AuctionInfo {
+  buyPrice: number;
+  endDate: Date;
+  tradeAmount: number;
+}
+
+export interface ItemOption {
+  optionName: string;
+  value: number;
+}
+
+export interface Item {
+  name: string;
+  grade: string;
+  auctionInfo: AuctionInfo;
+  arkPoint: number;
+  itemOption: ItemOption;
+}
