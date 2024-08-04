@@ -70,6 +70,7 @@ export default function OptionsSetter() {
   }, [optionValue]);
 
   const delay = (ms: number) =>
+    // eslint-disable-next-line no-promise-executor-return
     new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleClick = async () => {
