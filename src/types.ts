@@ -40,7 +40,7 @@ export interface AuctionInfo {
 export interface ItemOption {
   optionName: string;
   value: number;
-  isValuePercentage?: boolean;
+  isValuePercentage: boolean;
 }
 
 export interface Item {

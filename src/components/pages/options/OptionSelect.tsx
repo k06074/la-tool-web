@@ -2,11 +2,11 @@ import { SelectGroup } from "@radix-ui/react-select";
 import { Label } from "@@/components/ui/label";
 import {
   Select,
-  SelectValue,
   SelectContent,
   SelectItem,
-  SelectTrigger,
   SelectLabel,
+  SelectTrigger,
+  SelectValue,
 } from "@@/components/ui/select";
 import { ACC_OPTIONS, ALL_OPTIONS } from "@@/lib/constants";
 
@@ -25,7 +25,10 @@ export default function OptionSelect({
   return (
     <div className="flex-1">
       <Label>옵션</Label>
-      <Select onValueChange={setOptionValue} value={optionValue}>
+      <Select
+        onValueChange={(v) => setOptionValue(Number(v))}
+        value={optionValue.toString()}
+      >
         <SelectTrigger>
           <SelectValue placeholder="Theme" />
         </SelectTrigger>
@@ -33,11 +36,15 @@ export default function OptionSelect({
           <SelectGroup>
             <SelectLabel>특수 옵션</SelectLabel>
             {optionList.map((option) => (
-              <SelectItem value={option.value}>{option.text}</SelectItem>
+              <SelectItem value={option.value.toString()}>
+                {option.text}
+              </SelectItem>
             ))}
             <SelectLabel>일반 옵션</SelectLabel>
             {ALL_OPTIONS.map((option) => (
-              <SelectItem value={option.value}>{option.text}</SelectItem>
+              <SelectItem value={option.value.toString()}>
+                {option.text}
+              </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>

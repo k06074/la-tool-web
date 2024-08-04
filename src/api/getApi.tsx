@@ -5,6 +5,7 @@ export const getItems = async (
   itemsProps: GetItemsProps,
   page: number,
   currentKey: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_LOSTARK_ENDPOINT}/auctions/items`,

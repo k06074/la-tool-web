@@ -1,3 +1,5 @@
+import { useAtom } from "jotai/react";
+import { targetOptionValueAtom } from "@@/atoms/targetOptionValue";
 import { Label } from "@@/components/ui/label";
 import {
   Select,
@@ -9,18 +11,15 @@ import {
 import { ACC_OPTIONS, ALL_OPTIONS } from "@@/lib/constants";
 
 interface OptionValueSelectProps {
-  optionValueValue: string;
-  setOptionValueValue: (
-    value: ((prevState: string) => string) | string,
-  ) => void;
   optionValue: number;
 }
 
 export default function OptionValueSelect({
-  optionValueValue,
-  setOptionValueValue,
   optionValue,
 }: OptionValueSelectProps) {
+  const [optionValueValue, setOptionValueValue] = useAtom(
+    targetOptionValueAtom,
+  );
   const combinedOptions = [...ALL_OPTIONS, ...ACC_OPTIONS.flat()];
 
   const valueList =
@@ -29,7 +28,15 @@ export default function OptionValueSelect({
   return (
     <div>
       <Label>값</Label>
-      <Select onValueChange={setOptionValueValue} value={optionValueValue}>
+      <Select
+        onValueChange={(v) =>
+          setOptionValueValue({
+            name: optionValue,
+            value: v,
+          })
+        }
+        value={optionValueValue.value}
+      >
         <SelectTrigger className="w-24">
           <SelectValue placeholder="" />
         </SelectTrigger>

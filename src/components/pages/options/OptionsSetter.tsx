@@ -20,9 +20,7 @@ export default function OptionsSetter() {
   const [point, setPoint] = useState(4);
   const [optionValue, setOptionValue] = useState<number>(0);
   const [searchOption, setSearchOption] = useAtom(searchOptionAtom);
-  const [optionValueValue, setOptionValueValue] = useAtom(
-    targetOptionValueAtom,
-  );
+  const setOptionValueValue = useSetAtom(targetOptionValueAtom);
   const setItems = useSetAtom(accItems);
 
   useEffect(() => {
@@ -58,6 +56,7 @@ export default function OptionsSetter() {
         value: "",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accValue]);
 
   useEffect(() => {
@@ -67,6 +66,7 @@ export default function OptionsSetter() {
         value: "",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [optionValue]);
 
   const delay = (ms: number) =>
@@ -83,6 +83,7 @@ export default function OptionsSetter() {
       const batchSize = 550;
       const batchEnd = Math.min(batchStart + batchSize, requestCount);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const promises: Promise<any>[] = [];
       for (let i = batchStart; i < batchEnd; i++) {
         const promise = getItems(searchOption, i, i % 5);
@@ -92,7 +93,9 @@ export default function OptionsSetter() {
       const results = await Promise.all(promises);
 
       const convertedItems: Item[] = results.flatMap((items) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return items.Items.map((i: any) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const ectOptions: any[] = i.Options ?? [];
           const arkOption = ectOptions.find(
             (option) => option.Type === "ARK_PASSIVE",
@@ -171,16 +174,7 @@ export default function OptionsSetter() {
         setOptionValue={setOptionValue}
         accValue={accValue}
       />
-      <OptionValueSelect
-        optionValueValue={optionValueValue.value}
-        setOptionValueValue={(v) =>
-          setOptionValueValue({
-            name: optionValue,
-            value: v,
-          })
-        }
-        optionValue={optionValue}
-      />
+      <OptionValueSelect optionValue={optionValue} />
       <Button
         className="self-end"
         disabled={optionValue === 0}

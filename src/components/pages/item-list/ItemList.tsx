@@ -24,7 +24,11 @@ export default function ItemList() {
       ).length > 0,
   );
 
-  const getOptionIndex = (optionName, optionValue, isValuePercentage) => {
+  const getOptionIndex = (
+    optionName: string,
+    optionValue: number,
+    isValuePercentage: boolean,
+  ): number => {
     const matchedOption = allOptionList.find(
       (option) =>
         option.text === optionName &&
