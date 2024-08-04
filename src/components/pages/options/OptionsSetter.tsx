@@ -1,8 +1,10 @@
+/* eslint-disable no-plusplus */
 import { useAtom, useSetAtom } from "jotai/react";
 import { useEffect, useState } from "react";
 import { getItems } from "@@/api/getApi";
 import { accItems } from "@@/atoms/accItems";
 import { searchOptionAtom } from "@@/atoms/searchOption";
+import { targetOptionValueAtom } from "@@/atoms/targetOptionValue";
 import AccSelect from "@@/components/pages/options/AccSelect";
 import OptionSelect from "@@/components/pages/options/OptionSelect";
 import OptionValueSelect from "@@/components/pages/options/OptionValueSelect";
@@ -10,7 +12,7 @@ import { Button } from "@@/components/ui/button";
 import { Input } from "@@/components/ui/input";
 import { Label } from "@@/components/ui/label";
 import { CATEGORYS } from "@@/lib/constants";
-import { SearchDetailOption } from "@@/types";
+import { Item, ItemOption, SearchDetailOption } from "@@/types";
 
 export default function OptionsSetter() {
   const [accValue, setAccValue] = useState(0);
@@ -18,7 +20,9 @@ export default function OptionsSetter() {
   const [point, setPoint] = useState(4);
   const [optionValue, setOptionValue] = useState<number>(0);
   const [searchOption, setSearchOption] = useAtom(searchOptionAtom);
-  const [optionValueValue, setOptionValueValue] = useState("");
+  const [optionValueValue, setOptionValueValue] = useAtom(
+    targetOptionValueAtom,
+  );
   const setItems = useSetAtom(accItems);
 
   useEffect(() => {
@@ -49,35 +53,84 @@ export default function OptionsSetter() {
   useEffect(() => {
     if (accValue) {
       setOptionValue(0);
-      setOptionValueValue("");
+      setOptionValueValue({
+        name: 0,
+        value: "",
+      });
     }
   }, [accValue]);
 
   useEffect(() => {
     if (optionValue) {
-      setOptionValueValue("");
+      setOptionValueValue({
+        name: optionValue,
+        value: "",
+      });
     }
   }, [optionValue]);
 
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
   const handleClick = async () => {
-    const items = await getItems(searchOption);
-    const convertedItems = items.Items.map((i) => {
-      return {
-        name: i.Name,
-        grade: i.Grade,
-        auctionInfo: {
-          buyPrice: i.AuctionInfo.BuyPrice,
-          endDate: i.AuctionInfo.EndDate,
-          tradeAmount: i.AuctionInfo.TradeAllowCount,
-        },
-        arkPoint: i.Options[0].Value,
-        itemOption: {
-          optionName: i.Options[1].OptionName,
-          value: i.Options[1].Value,
-        },
-      } as Item;
-    });
-    setItems(convertedItems);
+    const initialReq = await getItems(searchOption, 1, 1);
+    const totalCount = initialReq.TotalCount;
+    const requestCount = Math.ceil(totalCount / 10);
+
+    const delayTime = 61000; // Delay in milliseconds (1 minute)
+
+    const makeRequests = async (batchStart: number) => {
+      const batchSize = 550;
+      const batchEnd = Math.min(batchStart + batchSize, requestCount);
+
+      const promises: Promise<any>[] = [];
+      for (let i = batchStart; i < batchEnd; i++) {
+        const promise = getItems(searchOption, i, i % 5);
+        promises.push(promise);
+      }
+
+      const results = await Promise.all(promises);
+
+      const convertedItems: Item[] = results.flatMap((items) => {
+        return items.Items.map((i: any) => {
+          const ectOptions: any[] = i.Options ?? [];
+          const arkOption = ectOptions.find(
+            (option) => option.Type === "ARK_PASSIVE",
+          ) ?? { Value: 0 };
+          const itemOptions: ItemOption[] = ectOptions
+            .filter((option) => option.Type === "ACCESSORY_UPGRADE")
+            .map((itemOption) => {
+              return {
+                optionName: itemOption.OptionName,
+                value: itemOption.Value,
+                isValuePercentage: itemOption.IsValuePercentage,
+              };
+            });
+          return {
+            page: items.PageNo,
+            name: i.Name,
+            grade: i.Grade,
+            gradeQuality: i.GradeQuality,
+            auctionInfo: {
+              buyPrice: i.AuctionInfo.BuyPrice,
+              endDate: i.AuctionInfo.EndDate,
+              tradeAmount: i.AuctionInfo.TradeAllowCount,
+            },
+            arkPoint: arkOption.Value,
+            itemOption: itemOptions,
+          };
+        });
+      });
+
+      setItems((prev: Item[]) => [...prev, ...convertedItems]);
+
+      if (batchEnd < requestCount) {
+        await delay(delayTime);
+        await makeRequests(batchEnd);
+      }
+    };
+
+    await makeRequests(1);
   };
 
   return (
@@ -119,8 +172,13 @@ export default function OptionsSetter() {
         accValue={accValue}
       />
       <OptionValueSelect
-        optionValueValue={optionValueValue}
-        setOptionValueValue={setOptionValueValue}
+        optionValueValue={optionValueValue.value}
+        setOptionValueValue={(v) =>
+          setOptionValueValue({
+            name: optionValue,
+            value: v,
+          })
+        }
         optionValue={optionValue}
       />
       <Button

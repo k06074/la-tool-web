@@ -40,12 +40,15 @@ export interface AuctionInfo {
 export interface ItemOption {
   optionName: string;
   value: number;
+  isValuePercentage?: boolean;
 }
 
 export interface Item {
+  page: number;
   name: string;
   grade: string;
+  gradeQuality: number;
   auctionInfo: AuctionInfo;
   arkPoint: number;
-  itemOption: ItemOption;
+  itemOption: ItemOption[];
 }
