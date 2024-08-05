@@ -131,13 +131,13 @@ export default function OptionsSetter() {
   };
 
   return (
-    <div className="flex w-full flex-wrap gap-2 rounded bg-blue-50 p-4">
+    <div className="flex w-full flex-wrap gap-2 rounded bg-blue-100 p-4">
       <div className="flex gap-2">
         <AccSelect accValue={accValue} setAccValue={setAccValue} />
         <div>
           <Label>품질</Label>
           <Input
-            className="max-w-14"
+            className="max-w-20"
             type="number"
             id="ItemGradeQuality"
             placeholder="품질"
@@ -152,7 +152,7 @@ export default function OptionsSetter() {
         <div>
           <Label htmlFor="number">깨달음</Label>
           <Input
-            className="max-w-14"
+            className="max-w-20"
             type="number"
             id="accPoint"
             placeholder="깨달음"
@@ -165,7 +165,7 @@ export default function OptionsSetter() {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-1 flex-col gap-2">
         <div className="flex gap-2">
           <OptionSelect
             idx={0}

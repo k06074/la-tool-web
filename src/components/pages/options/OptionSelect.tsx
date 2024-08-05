@@ -26,7 +26,7 @@ export default function OptionSelect({
 }: OptionSelectProps) {
   const optionList = ACC_OPTIONS[accValue];
   return (
-    <div className="w-36">
+    <div className="flex-1">
       <Select
         onValueChange={(v) => {
           if (idx === 0) {
