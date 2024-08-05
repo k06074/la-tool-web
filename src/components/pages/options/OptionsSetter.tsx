@@ -131,7 +131,7 @@ export default function OptionsSetter() {
   };
 
   return (
-    <div className="flex w-full flex-wrap gap-2 rounded bg-blue-100 p-4">
+    <div className="flex w-full flex-wrap gap-2 rounded border-2 bg-gray-100 p-4">
       <div className="flex gap-2">
         <AccSelect accValue={accValue} setAccValue={setAccValue} />
         <div>

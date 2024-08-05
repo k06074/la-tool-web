@@ -65,7 +65,7 @@ export default function ItemList() {
   const textString = `content-center text-center text-sm text-gray-700`;
 
   return (
-    <div className="h-[calc(100vh-200px)] w-full overflow-y-scroll rounded bg-blue-100 p-2">
+    <div className="h-[calc(100vh-200px)] w-full overflow-y-scroll rounded border-2 bg-gray-100 p-2">
       <div className="mb-2 flex w-full rounded bg-gray-200 px-4 py-1">
         <p className={`w-1/12 ${textString}`}>페이지</p>
         <p className={`w-1/2 ${textString}`}>옵션</p>
