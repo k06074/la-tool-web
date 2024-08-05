@@ -1,6 +1,5 @@
 import { useAtom } from "jotai/react";
 import { targetOptionValueAtom } from "@@/atoms/targetOptionValue";
-import { Label } from "@@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -11,10 +10,12 @@ import {
 import { ACC_OPTIONS, ALL_OPTIONS } from "@@/lib/constants";
 
 interface OptionValueSelectProps {
+  idx: number;
   optionValue: number;
 }
 
 export default function OptionValueSelect({
+  idx,
   optionValue,
 }: OptionValueSelectProps) {
   const [optionValueValue, setOptionValueValue] = useAtom(
@@ -27,15 +28,27 @@ export default function OptionValueSelect({
       ?.option || [];
   return (
     <div>
-      <Label>값</Label>
       <Select
-        onValueChange={(v) =>
-          setOptionValueValue({
-            name: optionValue,
-            value: v,
-          })
-        }
-        value={optionValueValue.value}
+        onValueChange={(v) => {
+          if (idx === 0) {
+            setOptionValueValue((prev) => [
+              {
+                name: optionValue,
+                value: v,
+              },
+              prev[1],
+            ]);
+          } else {
+            setOptionValueValue((prev) => [
+              prev[0],
+              {
+                name: optionValue,
+                value: v,
+              },
+            ]);
+          }
+        }}
+        value={optionValueValue[idx].value}
       >
         <SelectTrigger className="w-24">
           <SelectValue placeholder="" />

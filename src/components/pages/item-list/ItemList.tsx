@@ -7,22 +7,38 @@ export default function ItemList() {
   const items = useAtomValue(accItems);
   const targetOptionValue = useAtomValue(targetOptionValueAtom);
   const allOptionList = [...ACC_OPTIONS.flat(), ...ALL_OPTIONS];
-  const currentTargetOption = allOptionList.filter(
-    (options) => options.value === targetOptionValue.name,
+  const currentTargetOption1 = allOptionList.filter(
+    (options) => options.value === targetOptionValue[0].name,
   )[0];
-  const currentTargetOptionName = currentTargetOption?.text || "";
-  const currentIsValuePercentage =
-    currentTargetOption?.isValuePercentage || false;
+  const currentTargetOptionName1 = currentTargetOption1?.text || "";
+  const currentIsValuePercentage1 =
+    currentTargetOption1?.isValuePercentage || false;
+  const isSecondOption = targetOptionValue[1].value !== "0";
+  const currentTargetOption2 = allOptionList.filter(
+    (options) => options.value === targetOptionValue[1].name,
+  )[0];
+  const currentTargetOptionName2 = currentTargetOption2?.text || "";
+  const currentIsValuePercentage2 =
+    currentTargetOption2?.isValuePercentage || false;
 
-  const showItems = items.filter(
-    (item) =>
-      item.itemOption.filter(
-        (itemOp) =>
-          itemOp.optionName === currentTargetOptionName &&
-          itemOp.isValuePercentage === currentIsValuePercentage &&
-          itemOp.value >= Number(targetOptionValue.value),
-      ).length > 0,
-  );
+  const showItems = items.filter((item) => {
+    const matchesFirstOption = item.itemOption.some(
+      (itemOp) =>
+        itemOp.optionName === currentTargetOptionName1 &&
+        itemOp.isValuePercentage === currentIsValuePercentage1 &&
+        itemOp.value >= Number(targetOptionValue[0].value),
+    );
+    const matchesSecondOption = isSecondOption
+      ? item.itemOption.some(
+          (itemOp) =>
+            itemOp.optionName === currentTargetOptionName2 &&
+            itemOp.isValuePercentage === currentIsValuePercentage2 &&
+            itemOp.value >= Number(targetOptionValue[1].value),
+        )
+      : true;
+
+    return matchesFirstOption && matchesSecondOption;
+  });
 
   const getOptionIndex = (
     optionName: string,
@@ -49,8 +65,8 @@ export default function ItemList() {
   const textString = `content-center text-center text-sm text-gray-700`;
 
   return (
-    <div className="h-[calc(100vh-200px)] w-full overflow-y-scroll rounded bg-gray-200 p-2">
-      <div className="flex w-full rounded bg-gray-300 px-4 py-1">
+    <div className="h-[calc(100vh-200px)] w-full overflow-y-scroll rounded bg-blue-50 p-2">
+      <div className="mb-2 flex w-full rounded bg-gray-200 px-4 py-1">
         <p className={`w-1/12 ${textString}`}>페이지</p>
         <p className={`w-1/2 ${textString}`}>옵션</p>
         <p className={`w-1/6 ${textString}`}>가격</p>
@@ -60,17 +76,23 @@ export default function ItemList() {
       </div>
       {showItems.map((item) => (
         <div
-          className={`mt-1 flex w-full rounded px-4 py-1
-          ${item.grade === "유물" ? "bg-orange-200" : "bg-gray-100"}`}
+          className={`relative mt-1 flex w-full rounded-[10px] py-1 pl-2 pr-4
+          shadow-[2px_2px_8px_0px_rgba(0,0,0,0.10)]
+          ${item.grade === "유물" ? "bg-orange-100" : "bg-gray-100"}`}
         >
+          <div
+            className={`absolute left-0 top-0 h-full w-[12px] rounded-l-[10px]
+            ${item.grade === "유물" ? "bg-orange-300" : "bg-blue-300"}`}
+          />
           <p className={`w-1/12 ${textString}`}>{item.page}</p>
           <div className={`w-1/2 ${textString}`}>
             {item.itemOption.map((itemOp) => (
               <p
                 className={`${ optionColor[ getOptionIndex( itemOp.optionName, itemOp.value,
-                itemOp.isValuePercentage, ) ] } rounded ${ currentTargetOptionName ===
-                itemOp.optionName && currentIsValuePercentage === itemOp.isValuePercentage &&
-                "font-bold" }`}
+                itemOp.isValuePercentage, ) ] } rounded ${ ((currentTargetOptionName1 ===
+                itemOp.optionName && currentIsValuePercentage1 === itemOp.isValuePercentage) ||
+                (currentTargetOptionName2 === itemOp.optionName && currentIsValuePercentage2 ===
+                itemOp.isValuePercentage)) && "font-bold" }`}
               >
                 {`${itemOp.optionName}-${itemOp.value}`}
               </p>

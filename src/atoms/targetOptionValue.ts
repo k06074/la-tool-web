@@ -5,7 +5,13 @@ interface optionValue {
   value: string;
 }
 
-export const targetOptionValueAtom = atomWithReset<optionValue>({
-  name: 0,
-  value: "",
-});
+export const targetOptionValueAtom = atomWithReset<optionValue[]>([
+  {
+    name: 0,
+    value: "",
+  },
+  {
+    name: 0,
+    value: "",
+  },
+]);

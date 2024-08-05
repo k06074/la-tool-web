@@ -1,5 +1,6 @@
 /* eslint-disable no-plusplus */
 import { useAtom, useSetAtom } from "jotai/react";
+import { useResetAtom } from "jotai/react/utils";
 import { useEffect, useState } from "react";
 import { getItems } from "@@/api/getApi";
 import { accItems } from "@@/atoms/accItems";
@@ -18,19 +19,23 @@ export default function OptionsSetter() {
   const [accValue, setAccValue] = useState(0);
   const [quality, setQuality] = useState(67);
   const [point, setPoint] = useState(4);
-  const [optionValue, setOptionValue] = useState<number>(0);
+  const [optionValue, setOptionValue] = useState<number[]>([0, 0]);
   const [searchOption, setSearchOption] = useAtom(searchOptionAtom);
-  const setOptionValueValue = useSetAtom(targetOptionValueAtom);
+  const resetOptionValueValue = useResetAtom(targetOptionValueAtom);
   const setItems = useSetAtom(accItems);
 
   useEffect(() => {
     const etcOptionList = [
-      {
-        FirstOption: 7,
-        SecondOption: optionValue,
-        MinValue: null,
-        MaxValue: null,
-      },
+      ...optionValue
+        .filter((opt) => opt !== 0)
+        .map((op) => {
+          return {
+            FirstOption: 7,
+            SecondOption: op,
+            MinValue: null,
+            MaxValue: null,
+          };
+        }),
       {
         FirstOption: 8,
         SecondOption: 1,
@@ -50,30 +55,18 @@ export default function OptionsSetter() {
 
   useEffect(() => {
     if (accValue) {
-      setOptionValue(0);
-      setOptionValueValue({
-        name: 0,
-        value: "",
-      });
+      setOptionValue([0, 0]);
+      resetOptionValueValue();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accValue]);
-
-  useEffect(() => {
-    if (optionValue) {
-      setOptionValueValue({
-        name: optionValue,
-        value: "",
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [optionValue]);
 
   const delay = (ms: number) =>
     // eslint-disable-next-line no-promise-executor-return
     new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleClick = async () => {
+    setItems([]);
     const initialReq = await getItems(searchOption, 1, 1);
     const totalCount = initialReq.TotalCount;
     const requestCount = Math.ceil(totalCount / 10);
@@ -81,7 +74,7 @@ export default function OptionsSetter() {
     const delayTime = 61000; // Delay in milliseconds (1 minute)
 
     const makeRequests = async (batchStart: number) => {
-      const batchSize = 550;
+      const batchSize = 490;
       const batchEnd = Math.min(batchStart + batchSize, requestCount);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -138,47 +131,63 @@ export default function OptionsSetter() {
   };
 
   return (
-    <div className="flex w-full gap-2 rounded bg-gray-200 p-4">
-      <AccSelect accValue={accValue} setAccValue={setAccValue} />
-      <div>
-        <Label>품질</Label>
-        <Input
-          className="max-w-16"
-          type="number"
-          id="ItemGradeQuality"
-          placeholder="품질"
-          value={quality}
-          onChange={(e) => {
-            const inputValue = Number(e.target.value);
-            if (inputValue > 100) setQuality(100);
-            else setQuality(inputValue ?? 0);
-          }}
-        />
+    <div className="flex w-full flex-wrap gap-2 rounded bg-blue-50 p-4">
+      <div className="flex gap-2">
+        <AccSelect accValue={accValue} setAccValue={setAccValue} />
+        <div>
+          <Label>품질</Label>
+          <Input
+            className="max-w-14"
+            type="number"
+            id="ItemGradeQuality"
+            placeholder="품질"
+            value={quality}
+            onChange={(e) => {
+              const inputValue = Number(e.target.value);
+              if (inputValue > 100) setQuality(100);
+              else setQuality(inputValue ?? 0);
+            }}
+          />
+        </div>
+        <div>
+          <Label htmlFor="number">깨달음</Label>
+          <Input
+            className="max-w-14"
+            type="number"
+            id="accPoint"
+            placeholder="깨달음"
+            value={point}
+            onChange={(e) => {
+              const inputValue = Number(e.target.value);
+              if (inputValue > 13) setPoint(13);
+              else setPoint(inputValue ?? 0);
+            }}
+          />
+        </div>
       </div>
-      <div>
-        <Label htmlFor="number">깨달음</Label>
-        <Input
-          className="max-w-16"
-          type="number"
-          id="accPoint"
-          placeholder="깨달음"
-          value={point}
-          onChange={(e) => {
-            const inputValue = Number(e.target.value);
-            if (inputValue > 13) setPoint(13);
-            else setPoint(inputValue ?? 0);
-          }}
-        />
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-2">
+          <OptionSelect
+            idx={0}
+            optionValue={optionValue[0]}
+            setOptionValue={setOptionValue}
+            accValue={accValue}
+          />
+          <OptionValueSelect idx={0} optionValue={optionValue[0]} />
+        </div>
+        <div className="flex gap-2">
+          <OptionSelect
+            idx={1}
+            optionValue={optionValue[1]}
+            setOptionValue={setOptionValue}
+            accValue={accValue}
+          />
+          <OptionValueSelect idx={1} optionValue={optionValue[1]} />
+        </div>
       </div>
-      <OptionSelect
-        optionValue={optionValue}
-        setOptionValue={setOptionValue}
-        accValue={accValue}
-      />
-      <OptionValueSelect optionValue={optionValue} />
       <Button
-        className="self-end"
-        disabled={optionValue === 0}
+        className="self-center"
+        disabled={optionValue[0] === 0 && optionValue[1] === 0}
         onClick={handleClick}
       >
         검색
