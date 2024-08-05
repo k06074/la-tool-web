@@ -1,4 +1,5 @@
 import { useAtomValue } from "jotai/react";
+import { useMemo } from "react";
 import { accItems } from "@@/atoms/accItems";
 import { targetOptionValueAtom } from "@@/atoms/targetOptionValue";
 import { ACC_OPTIONS, ALL_OPTIONS } from "@@/lib/constants";
@@ -13,7 +14,7 @@ export default function ItemList() {
   const currentTargetOptionName1 = currentTargetOption1?.text || "";
   const currentIsValuePercentage1 =
     currentTargetOption1?.isValuePercentage || false;
-  const isSecondOption = targetOptionValue[1].value !== "0";
+  const isSecondOption = targetOptionValue[1].name !== 0;
   const currentTargetOption2 = allOptionList.filter(
     (options) => options.value === targetOptionValue[1].name,
   )[0];
@@ -21,24 +22,30 @@ export default function ItemList() {
   const currentIsValuePercentage2 =
     currentTargetOption2?.isValuePercentage || false;
 
-  const showItems = items.filter((item) => {
-    const matchesFirstOption = item.itemOption.some(
-      (itemOp) =>
-        itemOp.optionName === currentTargetOptionName1 &&
-        itemOp.isValuePercentage === currentIsValuePercentage1 &&
-        itemOp.value >= Number(targetOptionValue[0].value),
-    );
-    const matchesSecondOption = isSecondOption
-      ? item.itemOption.some(
+  const showItems = useMemo(
+    () =>
+      items.filter((item) => {
+        const matchesFirstOption = item.itemOption.some(
           (itemOp) =>
-            itemOp.optionName === currentTargetOptionName2 &&
-            itemOp.isValuePercentage === currentIsValuePercentage2 &&
-            itemOp.value >= Number(targetOptionValue[1].value),
-        )
-      : true;
+            itemOp.optionName === currentTargetOptionName1 &&
+            itemOp.isValuePercentage === currentIsValuePercentage1 &&
+            itemOp.value >= Number(targetOptionValue[0].value),
+        );
+        const matchesSecondOption = isSecondOption
+          ? item.itemOption.some(
+              (itemOp) =>
+                itemOp.optionName === currentTargetOptionName2 &&
+                itemOp.isValuePercentage === currentIsValuePercentage2 &&
+                itemOp.value >= Number(targetOptionValue[1].value),
+            )
+          : true;
 
-    return matchesFirstOption && matchesSecondOption;
-  });
+        return isSecondOption
+          ? matchesFirstOption && matchesSecondOption
+          : matchesFirstOption;
+      }),
+    [items, targetOptionValue],
+  );
 
   const getOptionIndex = (
     optionName: string,

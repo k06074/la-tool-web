@@ -1,4 +1,6 @@
 import { SelectGroup } from "@radix-ui/react-select";
+import { useSetAtom } from "jotai/react";
+import { targetOptionValueAtom } from "@@/atoms/targetOptionValue";
 import {
   Select,
   SelectContent,
@@ -25,14 +27,29 @@ export default function OptionSelect({
   accValue,
 }: OptionSelectProps) {
   const optionList = ACC_OPTIONS[accValue];
+  const setOptionValueValue = useSetAtom(targetOptionValueAtom);
   return (
     <div className="flex-1">
       <Select
         onValueChange={(v) => {
           if (idx === 0) {
             setOptionValue((prev) => [Number(v), prev[1]]);
+            setOptionValueValue((prev) => [
+              {
+                name: Number(v),
+                value: "",
+              },
+              prev[1],
+            ]);
           } else {
             setOptionValue((prev) => [prev[0], Number(v)]);
+            setOptionValueValue((prev) => [
+              prev[0],
+              {
+                name: Number(v),
+                value: "",
+              },
+            ]);
           }
         }}
         value={optionValue.toString()}
