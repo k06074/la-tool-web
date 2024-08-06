@@ -44,6 +44,7 @@ export default function ItemList() {
           ? matchesFirstOption && matchesSecondOption
           : matchesFirstOption;
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [items, targetOptionValue],
   );
 
