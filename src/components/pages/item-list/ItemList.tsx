@@ -58,8 +58,6 @@ export default function ItemList() {
     [items, targetOptionValue, selectedGrades, optionCount],
   );
 
-  console.log(selectedGrades, showItems);
-
   const getOptionIndex = (
     optionName: string,
     optionValue: number,

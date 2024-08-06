@@ -32,6 +32,7 @@ export default function SearchButton({ optionValue }: SearchButtonProps) {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const promises: Promise<any>[] = [];
+      // eslint-disable-next-line no-plusplus
       for (let i = batchStart; i < batchEnd; i++) {
         const promise = getItems(searchOption, i, i % 5);
         promises.push(promise);
