@@ -108,7 +108,7 @@ export default function ItemList() {
             ${item.grade === "유물" ? "bg-orange-300" : "bg-blue-300"}`}
           />
           <p className={`w-1/12 ${textString}`}>{item.page}</p>
-          <div className={`w-1/2 ${textString}`}>
+          <div className={`w-1/2 ${textString} flex flex-col gap-[2px]`}>
             {item.itemOption.map((itemOp) => (
               <p
                 className={`${ optionColor[ getOptionIndex( itemOp.optionName, itemOp.value,
