@@ -7,7 +7,9 @@ export default function OptionCountToggle() {
   const [optionCount, setOptionCount] = useAtom(optionCountAtom);
 
   const handleOptionCount = (count: number) => {
-    setOptionCount(count);
+    if (optionCount.includes(count))
+      setOptionCount(optionCount.filter((c) => c !== count));
+    else setOptionCount([...optionCount, count]);
   };
 
   return (
@@ -19,7 +21,7 @@ export default function OptionCountToggle() {
             key={count}
             onClick={() => handleOptionCount(count)}
             className={`w-8 border-y-2 text-black hover:bg-gray-200
-            ${optionCount === count ? "bg-gray-300" : "bg-gray-100"}
+            ${optionCount.includes(count) ? "bg-gray-300" : "bg-gray-100"}
             ${index === 0 ? "rounded-l-lg rounded-r-none border-l-2" : index === arr.length - 1 ? "rounded-l-none rounded-r-lg border-r-2" : "rounded-none "} `}
           >
             {count}

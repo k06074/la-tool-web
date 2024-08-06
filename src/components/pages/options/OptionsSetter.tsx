@@ -1,30 +1,27 @@
 /* eslint-disable no-plusplus */
-import { useAtom, useSetAtom } from "jotai/react";
+import { useSetAtom } from "jotai/react";
 import { useResetAtom } from "jotai/react/utils";
 import { useEffect, useState } from "react";
-import { getItems } from "@@/api/getApi";
-import { accItems } from "@@/atoms/accItems";
 import { searchOptionAtom } from "@@/atoms/searchOption";
 import { targetOptionValueAtom } from "@@/atoms/targetOptionValue";
 import AccSelect from "@@/components/pages/options/AccSelect";
 import OptionSelect from "@@/components/pages/options/OptionSelect";
 import OptionValueSelect from "@@/components/pages/options/OptionValueSelect";
-import { Button } from "@@/components/ui/button";
 import { Input } from "@@/components/ui/input";
 import { Label } from "@@/components/ui/label";
 import { CATEGORYS } from "@@/lib/constants";
-import { Item, ItemOption, SearchDetailOption } from "@@/types";
+import { SearchDetailOption } from "@@/types";
 import GradeToggle from "./GradeToggle";
 import OptionCountToggle from "./OptionCountToggle";
+import SearchButton from "./SearchButton";
 
 export default function OptionsSetter() {
   const [accValue, setAccValue] = useState(0);
   const [quality, setQuality] = useState(67);
   const [point, setPoint] = useState(4);
   const [optionValue, setOptionValue] = useState<number[]>([0, 0]);
-  const [searchOption, setSearchOption] = useAtom(searchOptionAtom);
+  const setSearchOption = useSetAtom(searchOptionAtom);
   const resetOptionValueValue = useResetAtom(targetOptionValueAtom);
-  const setItems = useSetAtom(accItems);
 
   useEffect(() => {
     const etcOptionList = [
@@ -62,75 +59,6 @@ export default function OptionsSetter() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accValue]);
-
-  const delay = (ms: number) =>
-    // eslint-disable-next-line no-promise-executor-return
-    new Promise((resolve) => setTimeout(resolve, ms));
-
-  const handleClick = async () => {
-    setItems([]);
-    const initialReq = await getItems(searchOption, 1, 1);
-    const totalCount = initialReq.TotalCount;
-    const requestCount = Math.ceil(totalCount / 10);
-
-    const delayTime = 61000; // Delay in milliseconds (1 minute)
-
-    const makeRequests = async (batchStart: number) => {
-      const batchSize = 490;
-      const batchEnd = Math.min(batchStart + batchSize, requestCount);
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const promises: Promise<any>[] = [];
-      for (let i = batchStart; i < batchEnd; i++) {
-        const promise = getItems(searchOption, i, i % 5);
-        promises.push(promise);
-      }
-
-      const results = await Promise.all(promises);
-
-      const convertedItems: Item[] = results.flatMap((items) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return items.Items.map((i: any) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const ectOptions: any[] = i.Options ?? [];
-          const arkOption = ectOptions.find(
-            (option) => option.Type === "ARK_PASSIVE",
-          ) ?? { Value: 0 };
-          const itemOptions: ItemOption[] = ectOptions
-            .filter((option) => option.Type === "ACCESSORY_UPGRADE")
-            .map((itemOption) => {
-              return {
-                optionName: itemOption.OptionName,
-                value: itemOption.Value,
-                isValuePercentage: itemOption.IsValuePercentage,
-              };
-            });
-          return {
-            page: items.PageNo,
-            name: i.Name,
-            grade: i.Grade,
-            gradeQuality: i.GradeQuality,
-            auctionInfo: {
-              buyPrice: i.AuctionInfo.BuyPrice,
-              endDate: i.AuctionInfo.EndDate,
-              tradeAmount: i.AuctionInfo.TradeAllowCount,
-            },
-            arkPoint: arkOption.Value,
-            itemOption: itemOptions,
-          };
-        });
-      });
-
-      setItems((prev: Item[]) => [...prev, ...convertedItems]);
-
-      if (batchEnd < requestCount) {
-        await delay(delayTime);
-        await makeRequests(batchEnd);
-      }
-    };
-
-    await makeRequests(1);
-  };
 
   return (
     <div className="flex w-full flex-wrap gap-2 rounded border-2 bg-gray-100 p-4">
@@ -193,13 +121,7 @@ export default function OptionsSetter() {
           <OptionValueSelect idx={1} optionValue={optionValue[1]} />
         </div>
       </div>
-      <Button
-        className="self-center"
-        disabled={optionValue[0] === 0 && optionValue[1] === 0}
-        onClick={handleClick}
-      >
-        검색
-      </Button>
+      <SearchButton optionValue={optionValue} />
     </div>
   );
 }

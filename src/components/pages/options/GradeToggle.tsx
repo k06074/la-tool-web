@@ -1,19 +1,29 @@
-import { useAtom } from "jotai/react";
+import { useAtom, useSetAtom } from "jotai/react";
 import { Button } from "@@/components/ui/button";
 import { Label } from "@@/components/ui/label";
+import { searchOptionAtom } from "../../../atoms/searchOption";
 import { selectedGradesAtom } from "../../../atoms/selectedGrades";
 
 export default function GradeToggle() {
   const [selectedGrades, setSelectedGrades] = useAtom(selectedGradesAtom);
+  const setSearchOption = useSetAtom(searchOptionAtom);
 
   const buttonClass = "w-12 border-2 text-black";
 
   const toggleGrade = (grade: string) => {
-    if (selectedGrades.includes(grade)) {
-      setSelectedGrades(selectedGrades.filter((g) => g !== grade));
-    } else {
-      setSelectedGrades([...selectedGrades, grade]);
-    }
+    const isSelected = selectedGrades.includes(grade);
+    const updatedGrades = isSelected
+      ? selectedGrades.filter((g) => g !== grade)
+      : [...selectedGrades, grade];
+
+    setSelectedGrades(updatedGrades);
+
+    setSearchOption((prev) => {
+      return {
+        ...prev,
+        ItemGrade: updatedGrades.length === 1 ? updatedGrades[0] : undefined,
+      };
+    });
   };
 
   return (

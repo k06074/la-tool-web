@@ -3,10 +3,14 @@ import { useMemo } from "react";
 import { accItems } from "@@/atoms/accItems";
 import { targetOptionValueAtom } from "@@/atoms/targetOptionValue";
 import { ACC_OPTIONS, ALL_OPTIONS } from "@@/lib/constants";
+import { optionCountAtom } from "../../../atoms/optionCount";
+import { selectedGradesAtom } from "../../../atoms/selectedGrades";
 
 export default function ItemList() {
   const items = useAtomValue(accItems);
   const targetOptionValue = useAtomValue(targetOptionValueAtom);
+  const selectedGrades = useAtomValue(selectedGradesAtom);
+  const optionCount = useAtomValue(optionCountAtom);
   const allOptionList = [...ACC_OPTIONS.flat(), ...ALL_OPTIONS];
   const currentTargetOption1 = allOptionList.filter(
     (options) => options.value === targetOptionValue[0].name,
@@ -24,29 +28,37 @@ export default function ItemList() {
 
   const showItems = useMemo(
     () =>
-      items.filter((item) => {
-        const matchesFirstOption = item.itemOption.some(
-          (itemOp) =>
-            itemOp.optionName === currentTargetOptionName1 &&
-            itemOp.isValuePercentage === currentIsValuePercentage1 &&
-            itemOp.value >= Number(targetOptionValue[0].value),
-        );
-        const matchesSecondOption = isSecondOption
-          ? item.itemOption.some(
-              (itemOp) =>
-                itemOp.optionName === currentTargetOptionName2 &&
-                itemOp.isValuePercentage === currentIsValuePercentage2 &&
-                itemOp.value >= Number(targetOptionValue[1].value),
-            )
-          : true;
+      items
+        .filter((item) => {
+          const matchesFirstOption = item.itemOption.some(
+            (itemOp) =>
+              itemOp.optionName === currentTargetOptionName1 &&
+              itemOp.isValuePercentage === currentIsValuePercentage1 &&
+              itemOp.value >= Number(targetOptionValue[0].value),
+          );
+          const matchesSecondOption = isSecondOption
+            ? item.itemOption.some(
+                (itemOp) =>
+                  itemOp.optionName === currentTargetOptionName2 &&
+                  itemOp.isValuePercentage === currentIsValuePercentage2 &&
+                  itemOp.value >= Number(targetOptionValue[1].value),
+              )
+            : true;
 
-        return isSecondOption
-          ? matchesFirstOption && matchesSecondOption
-          : matchesFirstOption;
-      }),
+          return isSecondOption
+            ? matchesFirstOption && matchesSecondOption
+            : matchesFirstOption;
+        })
+        .filter(
+          (item) =>
+            selectedGrades.length === 0 || selectedGrades.includes(item.grade),
+        )
+        .filter((item) => optionCount.includes(item.itemOption.length)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [items, targetOptionValue],
+    [items, targetOptionValue, selectedGrades, optionCount],
   );
+
+  console.log(selectedGrades, showItems);
 
   const getOptionIndex = (
     optionName: string,
