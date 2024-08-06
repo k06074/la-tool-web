@@ -6,8 +6,8 @@ import "../styles/globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Title",
-  description: "Description",
+  title: "레번클로에10점",
+  description: "로스트아크 4티어 악세 검색기",
 };
 
 export default function RootLayout({

@@ -1,10 +1,10 @@
 import { useAtomValue } from "jotai/react";
 import { useMemo } from "react";
 import { accItems } from "@@/atoms/accItems";
+import { optionCountAtom } from "@@/atoms/optionCount";
+import { selectedGradesAtom } from "@@/atoms/selectedGrades";
 import { targetOptionValueAtom } from "@@/atoms/targetOptionValue";
 import { ACC_OPTIONS, ALL_OPTIONS } from "@@/lib/constants";
-import { optionCountAtom } from "../../../atoms/optionCount";
-import { selectedGradesAtom } from "../../../atoms/selectedGrades";
 
 export default function ItemList() {
   const items = useAtomValue(accItems);
@@ -93,8 +93,8 @@ export default function ItemList() {
         <p className={`w-1/12 ${textString} truncate`}>깨달음</p>
       </div>
       <div
-        className="h-[calc(100vh-380px)] w-full overflow-y-scroll sm:h-[calc(100vh-320px)]
-          md:h-[calc(100vh-230px)]"
+        className="h-[calc(100vh-420px)] w-full overflow-y-scroll sm:h-[calc(100vh-380px)]
+          md:h-[calc(100vh-290px)]"
       >
         {showItems.map((item) => (
           <div
