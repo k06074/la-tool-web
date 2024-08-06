@@ -14,6 +14,8 @@ import { Input } from "@@/components/ui/input";
 import { Label } from "@@/components/ui/label";
 import { CATEGORYS } from "@@/lib/constants";
 import { Item, ItemOption, SearchDetailOption } from "@@/types";
+import GradeToggle from "./GradeToggle";
+import OptionCountToggle from "./OptionCountToggle";
 
 export default function OptionsSetter() {
   const [accValue, setAccValue] = useState(0);
@@ -135,9 +137,9 @@ export default function OptionsSetter() {
       <div className="flex gap-2">
         <AccSelect accValue={accValue} setAccValue={setAccValue} />
         <div>
-          <Label>품질</Label>
+          <Label className="truncate">품질</Label>
           <Input
-            className="max-w-20"
+            className="min-w-12 max-w-20"
             type="number"
             id="ItemGradeQuality"
             placeholder="품질"
@@ -150,7 +152,9 @@ export default function OptionsSetter() {
           />
         </div>
         <div>
-          <Label htmlFor="number">깨달음</Label>
+          <Label htmlFor="number" className="truncate">
+            깨달음
+          </Label>
           <Input
             className="max-w-20"
             type="number"
@@ -164,6 +168,10 @@ export default function OptionsSetter() {
             }}
           />
         </div>
+      </div>
+      <div className="flex gap-2">
+        <GradeToggle />
+        <OptionCountToggle />
       </div>
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex gap-2">

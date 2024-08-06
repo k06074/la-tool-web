@@ -20,7 +20,7 @@ export default function AccSelect({ accValue, setAccValue }: AccSelectProps) {
         onValueChange={(v) => setAccValue(Number(v))}
         value={accValue.toString()}
       >
-        <SelectTrigger className="w-28">
+        <SelectTrigger className="w-[84px]">
           <SelectValue placeholder="Theme" />
         </SelectTrigger>
         <SelectContent>
