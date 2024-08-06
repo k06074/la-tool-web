@@ -1,4 +1,6 @@
+import { useAtom } from "jotai/react";
 import { ChangeEvent, useEffect, useState } from "react";
+import { keyDialogOpenAtom } from "@@/atoms/keyDialogOpen";
 import { Button } from "@@/components/ui/button";
 import {
   Dialog,
@@ -15,8 +17,8 @@ import KeyIcon from "../../../../public/icon/key.svg";
 import TrashIcon from "../../../../public/icon/trash.svg";
 
 export default function KeyDialog() {
-  const [open, setOpen] = useState(false);
-  const [keys, setKeys] = useState([]);
+  const [open, setOpen] = useAtom(keyDialogOpenAtom);
+  const [keys, setKeys] = useState<string[]>([]);
 
   useEffect(() => {
     const localKeys = localStorage.getItem("laApiKeys");

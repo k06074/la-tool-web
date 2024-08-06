@@ -84,13 +84,13 @@ export default function ItemList() {
 
   return (
     <div className="flex size-full flex-col rounded border-2 p-2">
-      <div className="mb-2 flex w-full rounded bg-gray-200 px-4 py-1">
-        <p className={`w-1/12 ${textString} truncate`}>페이지</p>
+      <div className="mb-2 flex w-full rounded bg-gray-200 py-1 pl-4 pr-8">
+        <p className={`w-1/12 ${textString} truncate`} />
         <p className={`w-1/2 ${textString} truncate`}>옵션</p>
         <p className={`w-1/6 ${textString} truncate`}>가격</p>
         <p className={`w-1/12 ${textString} truncate`}>품질</p>
-        <p className={`w-1/12 ${textString} truncate`}>가횟</p>
-        <p className={`w-1/12 ${textString} truncate`}>깨달음</p>
+        <p className={`w-1/12 ${textString} truncate`}>거횟</p>
+        <p className={`w-1/12 ${textString} truncate`}>깨달</p>
       </div>
       <div
         className="h-[calc(100vh-420px)] w-full overflow-y-scroll sm:h-[calc(100vh-380px)]
