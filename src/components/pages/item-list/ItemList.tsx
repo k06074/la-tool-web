@@ -80,55 +80,57 @@ export default function ItemList() {
 
     return valueIndex;
   };
-  const optionColor = ["bg-yellow-300", "bg-purple-300", "bg-green-300"];
+  const optionColor = ["bg-yellow-300", "bg-purple-400", "bg-green-300"];
 
   const textString = `content-center text-center text-sm text-gray-700`;
 
   return (
-    <div
-      className="h-[calc(100vh-320px)] w-full overflow-y-scroll rounded border-2 bg-gray-100 p-2
-        sm:h-[calc(100vh-250px)] md:h-[calc(100vh-160px)]"
-    >
+    <div className="flex size-full flex-col rounded border-2 p-2">
       <div className="mb-2 flex w-full rounded bg-gray-200 px-4 py-1">
-        <p className={`w-1/12 ${textString}`}>페이지</p>
-        <p className={`w-1/2 ${textString}`}>옵션</p>
-        <p className={`w-1/6 ${textString}`}>가격</p>
-        <p className={`w-1/12 ${textString}`}>품질</p>
-        <p className={`w-1/12 ${textString}`}>가횟</p>
-        <p className={`w-1/12 ${textString}`}>깨달음</p>
+        <p className={`w-1/12 ${textString} truncate`}>페이지</p>
+        <p className={`w-1/2 ${textString} truncate`}>옵션</p>
+        <p className={`w-1/6 ${textString} truncate`}>가격</p>
+        <p className={`w-1/12 ${textString} truncate`}>품질</p>
+        <p className={`w-1/12 ${textString} truncate`}>가횟</p>
+        <p className={`w-1/12 ${textString} truncate`}>깨달음</p>
       </div>
-      {showItems.map((item) => (
-        <div
-          className={`relative mt-1 flex w-full rounded-[10px] py-1 pl-2 pr-4
-          shadow-[2px_2px_8px_0px_rgba(0,0,0,0.10)]
-          ${item.grade === "유물" ? "bg-orange-100" : "bg-gray-100"}`}
-        >
+      <div
+        className="h-[calc(100vh-380px)] w-full overflow-y-scroll sm:h-[calc(100vh-320px)]
+          md:h-[calc(100vh-230px)]"
+      >
+        {showItems.map((item) => (
           <div
-            className={`absolute left-0 top-0 h-full w-[12px] rounded-l-[10px]
-            ${item.grade === "유물" ? "bg-orange-300" : "bg-blue-300"}`}
-          />
-          <p className={`w-1/12 ${textString}`}>{item.page}</p>
-          <div className={`w-1/2 ${textString} flex flex-col gap-[2px]`}>
-            {item.itemOption.map((itemOp) => (
-              <p
-                className={`${ optionColor[ getOptionIndex( itemOp.optionName, itemOp.value,
-                itemOp.isValuePercentage, ) ] } rounded ${ ((currentTargetOptionName1 ===
-                itemOp.optionName && currentIsValuePercentage1 === itemOp.isValuePercentage) ||
-                (currentTargetOptionName2 === itemOp.optionName && currentIsValuePercentage2 ===
-                itemOp.isValuePercentage)) && "font-bold" }`}
-              >
-                {`${itemOp.optionName}-${itemOp.value}`}
-              </p>
-            ))}
+            className={`relative mb-2 mr-2 flex rounded-[10px] py-1 pl-2 pr-4
+            shadow-[2px_2px_4px_0px_rgba(0,0,0,0.10)]
+            ${item.grade === "유물" ? "bg-orange-100" : "bg-gray-100"}`}
+          >
+            <div
+              className={`absolute left-0 top-0 h-full w-[12px] rounded-l-[10px]
+              ${item.grade === "유물" ? "bg-orange-300" : "bg-indigo-300"}`}
+            />
+            <p className={`w-1/12 ${textString}`}>{item.page}</p>
+            <div className={`w-1/2 ${textString} flex flex-col gap-[2px]`}>
+              {item.itemOption.map((itemOp) => (
+                <p
+                  className={` truncate ${ optionColor[ getOptionIndex( itemOp.optionName, itemOp.value,
+                  itemOp.isValuePercentage, ) ] } rounded ${ ((currentTargetOptionName1 ===
+                  itemOp.optionName && currentIsValuePercentage1 === itemOp.isValuePercentage) ||
+                  (currentTargetOptionName2 === itemOp.optionName && currentIsValuePercentage2 ===
+                  itemOp.isValuePercentage)) && "font-bold" }`}
+                >
+                  {`${itemOp.optionName}-${itemOp.value}`}
+                </p>
+              ))}
+            </div>
+            <p className={`w-1/6 ${textString}`}>{item.auctionInfo.buyPrice}</p>
+            <p className={`w-1/12 ${textString}`}>{item.gradeQuality}</p>
+            <p className={`w-1/12 ${textString}`}>
+              {item.auctionInfo.tradeAmount}
+            </p>
+            <p className={`w-1/12 ${textString}`}>{item.arkPoint}</p>
           </div>
-          <p className={`w-1/6 ${textString}`}>{item.auctionInfo.buyPrice}</p>
-          <p className={`w-1/12 ${textString}`}>{item.gradeQuality}</p>
-          <p className={`w-1/12 ${textString}`}>
-            {item.auctionInfo.tradeAmount}
-          </p>
-          <p className={`w-1/12 ${textString}`}>{item.arkPoint}</p>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
