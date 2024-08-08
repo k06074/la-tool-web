@@ -101,25 +101,22 @@ export default function OptionsSetter() {
         <GradeToggle />
         <OptionCountToggle />
       </div>
-      <div className="flex flex-1 flex-col gap-2">
-        <div className="flex gap-2">
-          <OptionSelect
-            idx={0}
-            optionValue={optionValue[0]}
-            setOptionValue={setOptionValue}
-            accValue={accValue}
-          />
-          <OptionValueSelect idx={0} optionValue={optionValue[0]} />
-        </div>
-        <div className="flex gap-2">
-          <OptionSelect
-            idx={1}
-            optionValue={optionValue[1]}
-            setOptionValue={setOptionValue}
-            accValue={accValue}
-          />
-          <OptionValueSelect idx={1} optionValue={optionValue[1]} />
-        </div>
+      <div className="flex flex-col gap-2">
+        {[1, 2].map((idx) => (
+          <div key={idx} className="flex gap-2">
+            <Label className="w-10 self-center truncate">옵션{idx}</Label>
+            <OptionSelect
+              idx={idx - 1}
+              optionValue={optionValue[idx - 1]}
+              setOptionValue={setOptionValue}
+              accValue={accValue}
+            />
+            <OptionValueSelect
+              idx={idx - 1}
+              optionValue={optionValue[idx - 1]}
+            />
+          </div>
+        ))}
       </div>
       <SearchButton optionValue={optionValue} />
     </div>

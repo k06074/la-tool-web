@@ -19,7 +19,7 @@ export const getItems = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKeys[page % apiKeys.length]}`,
+        Authorization: `Bearer ${apiKeys[page % Math.min(apiKeys.length, 5)]}`,
       },
       body: JSON.stringify({
         ...itemsProps,

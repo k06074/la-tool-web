@@ -29,7 +29,7 @@ export default function OptionSelect({
   const optionList = ACC_OPTIONS[accValue];
   const setOptionValueValue = useSetAtom(targetOptionValueAtom);
   return (
-    <div className="flex-1">
+    <div className="w-40">
       <Select
         onValueChange={(v) => {
           if (idx === 0) {
