@@ -3,6 +3,8 @@ import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 
 export default function Test() {
+  const costs = 4;
+
   const [header, setHeader] = useState<string[]>(["1", "2", "3", "4", "5"]);
   const [items, setItems] = useState<string[]>([
     "",
@@ -16,10 +18,12 @@ export default function Test() {
     "",
     "",
   ]);
-  const [random40Items, setRandom40Items] = useState<
+  const [randomItems, setRandomItems] = useState<
     { item: string; color: string }[]
   >([]);
-  const [revealed, setRevealed] = useState<boolean[]>(Array(40).fill(false));
+  const [revealed, setRevealed] = useState<boolean[]>(
+    Array(10 * costs).fill(false),
+  );
   const [clickedItems, setClickedItems] = useState<
     { item: string; color: string }[]
   >([]);
@@ -47,7 +51,7 @@ export default function Test() {
 
   const handleCreateRandom40Items = () => {
     const duplicatedItems = items.flatMap((item, index) =>
-      Array(4).fill({ item, color: colors[index] }),
+      Array(costs).fill({ item, color: colors[index] }),
     );
 
     const shuffledItems = duplicatedItems
@@ -55,8 +59,8 @@ export default function Test() {
       .sort((a, b) => a.sort - b.sort)
       .map(({ item, color }) => ({ item, color }));
 
-    setRandom40Items(shuffledItems);
-    setRevealed(Array(40).fill(false));
+    setRandomItems(shuffledItems);
+    setRevealed(Array(10 * costs).fill(false));
     setClickedItems([]);
   };
 
@@ -66,15 +70,15 @@ export default function Test() {
       newRevealed[index] = true;
       setRevealed(newRevealed);
 
-      setClickedItems([...clickedItems, random40Items[index]]);
+      setClickedItems([...clickedItems, randomItems[index]]);
     }
   };
 
   const getColorFillPercentage = (color: string) => {
-    const unrevealedCount = random40Items.filter(
+    const unrevealedCount = randomItems.filter(
       (item, index) => item.color === color && !revealed[index],
     ).length;
-    return (unrevealedCount / 4) * 100;
+    return (unrevealedCount / costs) * 100;
   };
 
   return (
@@ -119,7 +123,7 @@ export default function Test() {
 
       <div className="flex h-[420px] flex-col bg-gray-300">
         <div className="grid grid-cols-5 gap-2 px-10 py-5">
-          {random40Items.map(({ item, color }, index) => (
+          {randomItems.map(({ item, color }, index) => (
             <Button
               variant="secondary"
               className={` ${revealed[index] ? color : "bg-gray-500 text-white"} border-2 border-black`}
