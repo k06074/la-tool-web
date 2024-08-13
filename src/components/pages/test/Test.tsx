@@ -138,7 +138,7 @@ export default function Test() {
               <p className="border-b-2 text-center">{header[index]}</p>
               <div className="grid grid-cols-2 gap-2 p-2">
                 {clickedItems.map(
-                  ({ item, color }) =>
+                  ({ item, color }, idx) =>
                     idx % 5 === index && (
                       <p className={`rounded p-2 text-center ${color}`}>
                         {item}
