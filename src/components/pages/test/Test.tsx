@@ -3,7 +3,7 @@ import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 
 export default function Test() {
-  const costs = 4;
+  const [costs, setCosts] = useState(4);
 
   const [header, setHeader] = useState<string[]>(["1", "2", "3", "4", "5"]);
   const [items, setItems] = useState<string[]>([
@@ -116,9 +116,18 @@ export default function Test() {
             </div>
           ))}
         </div>
-        <Button className="mx-10 mb-5" onClick={handleCreateRandom40Items}>
-          생성!
-        </Button>
+        <div className="mx-10 flex gap-5">
+          <Input
+            value={costs}
+            onChange={(e) => {
+              setCosts(Number(e.target.value));
+            }}
+            className="w-10"
+          />
+          <Button className="mb-5 flex-1" onClick={handleCreateRandom40Items}>
+            생성!
+          </Button>
+        </div>
       </div>
 
       <div className="flex h-[420px] flex-col bg-gray-300">
