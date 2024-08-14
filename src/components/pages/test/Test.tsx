@@ -38,8 +38,6 @@ export default function Test() {
     index: number;
   } | null>(null);
 
-  const [clickedIndex, setClickedIndex] = useState<number | null>(null);
-
   const headerColors = [
     "bg-red-400",
     "bg-green-400",
@@ -88,22 +86,19 @@ export default function Test() {
     setRandomItems(shuffledItems);
     setRevealed(Array(10 * costs).fill(false));
     setClickedItems([]);
-    setClickedIndex(null);
   };
 
   const handleClick = (index: number) => {
     if (!revealed[index]) {
       setSelectedItem({ ...randomItems[index], index });
-      setClickedIndex(index);
 
       setTimeout(() => {
         const newRevealed = [...revealed];
         newRevealed[index] = true;
         setRevealed(newRevealed);
-
-        setClickedItems([...clickedItems, { ...randomItems[index], index }]);
+        const { id, item, color } = randomItems[index];
+        setClickedItems([...clickedItems, { id, item, color }]);
         setSelectedItem(null);
-        setClickedIndex(null);
       }, 1000);
     }
   };
@@ -225,7 +220,7 @@ export default function Test() {
       <AnimatePresence>
         {selectedItem && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
