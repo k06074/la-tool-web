@@ -30,13 +30,13 @@ export const ACC_OPTIONS = [
   [
     {
       value: 45,
-      text: "공격력 ",
+      text: "공격력",
       option: ["1.55", "0.95", "0.40"],
       isValuePercentage: true,
     },
     {
       value: 46,
-      text: "무기 공격력 ",
+      text: "무기 공격력",
       option: ["3.00", "1.80", "0.80"],
       isValuePercentage: true,
     },
@@ -84,13 +84,13 @@ export const ACC_OPTIONS = [
 export const ALL_OPTIONS = [
   {
     value: 53,
-    text: "공격력 ",
+    text: "공격력",
     option: ["390", "195", "80"],
     isValuePercentage: false,
   },
   {
     value: 54,
-    text: "무기 공격력 ",
+    text: "무기 공격력",
     option: ["960", "480", "195"],
     isValuePercentage: false,
   },
