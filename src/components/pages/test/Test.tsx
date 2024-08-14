@@ -1,4 +1,7 @@
+/* eslint-disable react/no-array-index-key */
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 
@@ -19,14 +22,23 @@ export default function Test() {
     "",
   ]);
   const [randomItems, setRandomItems] = useState<
-    { item: string; color: string }[]
+    { id: string; item: string; color: string }[]
   >([]);
   const [revealed, setRevealed] = useState<boolean[]>(
     Array(10 * costs).fill(false),
   );
   const [clickedItems, setClickedItems] = useState<
-    { item: string; color: string }[]
+    { id: string; item: string; color: string }[]
   >([]);
+
+  const [selectedItem, setSelectedItem] = useState<{
+    id: string;
+    item: string;
+    color: string;
+    index: number;
+  } | null>(null);
+
+  const [clickedIndex, setClickedIndex] = useState<number | null>(null);
 
   const headerColors = [
     "bg-red-400",
@@ -34,6 +46,14 @@ export default function Test() {
     "bg-blue-400",
     "bg-yellow-400",
     "bg-purple-400",
+  ];
+
+  const barColors = [
+    "bg-red-500",
+    "bg-green-500",
+    "bg-blue-500",
+    "bg-yellow-500",
+    "bg-purple-500",
   ];
 
   const colors = [
@@ -51,26 +71,40 @@ export default function Test() {
 
   const handleCreateRandom40Items = () => {
     const duplicatedItems = items.flatMap((item, index) =>
-      Array(costs).fill({ item, color: colors[index] }),
+      Array(costs)
+        .fill(null)
+        .map(() => ({
+          id: uuidv4(),
+          item,
+          color: colors[index],
+        })),
     );
 
     const shuffledItems = duplicatedItems
       .map((item) => ({ ...item, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
-      .map(({ item, color }) => ({ item, color }));
+      .map(({ id, item, color }) => ({ id, item, color }));
 
     setRandomItems(shuffledItems);
     setRevealed(Array(10 * costs).fill(false));
     setClickedItems([]);
+    setClickedIndex(null);
   };
 
   const handleClick = (index: number) => {
     if (!revealed[index]) {
-      const newRevealed = [...revealed];
-      newRevealed[index] = true;
-      setRevealed(newRevealed);
+      setSelectedItem({ ...randomItems[index], index });
+      setClickedIndex(index);
 
-      setClickedItems([...clickedItems, randomItems[index]]);
+      setTimeout(() => {
+        const newRevealed = [...revealed];
+        newRevealed[index] = true;
+        setRevealed(newRevealed);
+
+        setClickedItems([...clickedItems, { ...randomItems[index], index }]);
+        setSelectedItem(null);
+        setClickedIndex(null);
+      }, 1000);
     }
   };
 
@@ -85,9 +119,10 @@ export default function Test() {
     <div className="flex h-screen flex-col">
       <div className="flex flex-col bg-gray-200">
         <div className="grid grid-cols-5 gap-2 px-10 py-5">
-          {[...Array(5)].map((_, index) => (
+          {header.map((headerItem, index) => (
             <Input
-              value={header[index]}
+              key={`header-${index}`}
+              value={headerItem}
               onChange={(e) => {
                 const newHeader = [...header];
                 newHeader[index] = e.target.value;
@@ -96,10 +131,10 @@ export default function Test() {
               className={`text-center ${headerColors[index]} h-6 rounded-xl`}
             />
           ))}
-          {[...Array(10)].map((_, index) => (
-            <div className="relative w-full">
+          {items.map((item, index) => (
+            <div key={`item-${index}`} className="relative w-full">
               <Input
-                value={items[index]}
+                value={item}
                 onChange={(e) => {
                   const newItems = [...items];
                   newItems[index] = e.target.value;
@@ -108,9 +143,10 @@ export default function Test() {
                 className={`w-full ${colors[index]}`}
               />
               <div
-                className={`absolute bottom-0 right-0 h-2 ${headerColors[index % 5]}`}
+                className={`absolute bottom-0.5 right-0.5 h-2 rounded ${barColors[index % 5]}`}
                 style={{
-                  width: `${getColorFillPercentage(colors[index])}%`,
+                  width: `calc(${getColorFillPercentage(colors[index])}% - 4px)`,
+                  transition: "width 0.3s ease-in-out",
                 }}
               />
             </div>
@@ -130,32 +166,54 @@ export default function Test() {
         </div>
       </div>
 
-      <div className="flex h-[420px] flex-col bg-gray-300">
+      <div className="flex flex-1 flex-col overflow-y-scroll bg-gray-300">
         <div className="grid grid-cols-5 gap-2 px-10 py-5">
-          {randomItems.map(({ item, color }, index) => (
-            <Button
-              variant="secondary"
-              className={` ${revealed[index] ? color : "bg-gray-500 text-white"} border-2 border-black`}
-              onClick={() => handleClick(index)}
-            >
-              {revealed[index] ? item : "?"}
-            </Button>
-          ))}
+          {randomItems.map(({ id, item, color }, index) => {
+            return (
+              <motion.div
+                key={id}
+                layoutId={`box-${id}`}
+                className="relative h-10"
+              >
+                <Button
+                  variant="secondary"
+                  className={` ${revealed[index] ? color : "bg-gray-500 text-white"} ${
+                  clickedItems.some((clickedItem) => clickedItem.id === id)
+                      ? "hidden"
+                      : ""
+                  } size-full opacity-50 `}
+                  onClick={() => handleClick(index)}
+                >
+                  {revealed[index] ? item : "?"}
+                </Button>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
       <div className="flex h-[300px] flex-col bg-gray-200">
         <div className="grid grid-cols-5 gap-2 px-10 py-5">
-          {[...Array(5)].map((_, index) => (
-            <div className={`h-[240px] rounded ${headerColors[index]}`}>
-              <p className="border-b-2 text-center">{header[index]}</p>
+          {header.map((headerItem, headerIndex) => (
+            <div
+              key={`clicked-${headerIndex}`}
+              className={`h-[240px] rounded ${headerColors[headerIndex]}`}
+            >
+              <p className="border-b-2 text-center">{headerItem}</p>
               <div className="grid grid-cols-2 gap-2 p-2">
                 {clickedItems.map(
-                  ({ item, color }, idx) =>
-                    idx % 5 === index && (
-                      <p className={`rounded p-2 text-center ${color}`}>
+                  ({ id, item, color }, idx) =>
+                    idx % 5 === headerIndex && (
+                      <motion.div
+                        key={id}
+                        layoutId={`box-${id}`}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.1 }}
+                        className={`h-10 rounded border-2 border-black p-2 text-center ${color}`}
+                      >
                         {item}
-                      </p>
+                      </motion.div>
                     ),
                 )}
               </div>
@@ -163,6 +221,30 @@ export default function Test() {
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedItem && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              layoutId={`box-${selectedItem.id}`}
+              initial={{ scale: 1 }}
+              animate={{ scale: 1.1 }}
+              exit={{ scale: 1 }}
+              transition={{ duration: 0.2 }}
+              className={`rounded-lg p-10 ${selectedItem.color} shadow-lg`}
+            >
+              <p className="w-28 text-center text-3xl font-bold">
+                {selectedItem.item}
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
