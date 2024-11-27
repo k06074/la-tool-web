@@ -19,6 +19,7 @@ export interface GetItemsProps {
   ItemLevelMin?: number;
   ItemLevelMax?: number;
   ItemGradeQuality?: number | null;
+  ItemUpgradeLevel?: number | null;
   SkillOptions?: SearchDetailOption[];
   EtcOptions?: SearchDetailOption[];
   Sort?: SORT;
@@ -33,6 +34,7 @@ export interface GetItemsProps {
 
 export interface AuctionInfo {
   buyPrice: number;
+  currentPrice?: number;
   endDate: Date;
   tradeAmount: number;
 }

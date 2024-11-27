@@ -87,7 +87,7 @@ export default function ItemList() {
       <div className="mb-2 flex w-full rounded bg-gray-200 py-1 pl-4 pr-8">
         <p className={`w-1/12 ${textString} truncate`}>페이지</p>
         <p className={`w-1/2 ${textString} truncate`}>옵션</p>
-        <p className={`w-1/6 ${textString} truncate`}>가격</p>
+        <p className={`w-1/6 ${textString} truncate`}>가격(경매가)</p>
         <p className={`w-1/12 ${textString} truncate`}>품질</p>
         <p className={`w-1/12 ${textString} truncate`}>거횟</p>
         <p className={`w-1/12 ${textString} truncate`}>깨달</p>
@@ -120,7 +120,9 @@ export default function ItemList() {
                 </p>
               ))}
             </div>
-            <p className={`w-1/6 ${textString}`}>{item.auctionInfo.buyPrice}</p>
+            <p
+              className={`w-1/6 ${textString}`}
+            >{`${item.auctionInfo.buyPrice}\n(${item.auctionInfo.currentPrice})`}</p>
             <p className={`w-1/12 ${textString}`}>{item.gradeQuality}</p>
             <p className={`w-1/12 ${textString}`}>
               {item.auctionInfo.tradeAmount}

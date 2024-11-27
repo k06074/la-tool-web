@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import { useSetAtom } from "jotai/react";
+import { useAtomValue, useSetAtom } from "jotai/react";
 import { useResetAtom } from "jotai/react/utils";
 import { useEffect, useState } from "react";
 import { searchOptionAtom } from "@@/atoms/searchOption";
@@ -21,6 +21,7 @@ export default function OptionsSetter() {
   const [point, setPoint] = useState(4);
   const [optionValue, setOptionValue] = useState<number[]>([0, 0]);
   const setSearchOption = useSetAtom(searchOptionAtom);
+  const optionValueValue = useAtomValue(targetOptionValueAtom);
   const resetOptionValueValue = useResetAtom(targetOptionValueAtom);
 
   useEffect(() => {
@@ -28,11 +29,14 @@ export default function OptionsSetter() {
       ...optionValue
         .filter((opt) => opt !== 0)
         .map((op) => {
+          const { realValue } = optionValueValue.filter(
+            (val) => val.name === op,
+          )[0];
           return {
             FirstOption: 7,
             SecondOption: op,
-            MinValue: null,
-            MaxValue: null,
+            MinValue: realValue,
+            MaxValue: 3,
           };
         }),
       {
@@ -50,7 +54,14 @@ export default function OptionsSetter() {
         EtcOptions: etcOptionList,
       };
     });
-  }, [accValue, optionValue, point, quality, setSearchOption]);
+  }, [
+    accValue,
+    optionValue,
+    optionValueValue,
+    point,
+    quality,
+    setSearchOption,
+  ]);
 
   useEffect(() => {
     if (accValue) {

@@ -26,15 +26,18 @@ export default function OptionValueSelect({
   const valueList =
     combinedOptions.filter((option) => option.value === optionValue)[0]
       ?.option || [];
+
   return (
     <div>
       <Select
         onValueChange={(v) => {
+          const realValue = 3 - valueList.findIndex((val) => val === v);
           if (idx === 0) {
             setOptionValueValue((prev) => [
               {
                 name: optionValue,
                 value: v,
+                realValue,
               },
               prev[1],
             ]);
@@ -44,6 +47,7 @@ export default function OptionValueSelect({
               {
                 name: optionValue,
                 value: v,
+                realValue,
               },
             ]);
           }

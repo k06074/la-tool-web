@@ -84,6 +84,7 @@ export default function SearchButton({ optionValue }: SearchButtonProps) {
               buyPrice: item.AuctionInfo.BuyPrice,
               endDate: item.AuctionInfo.EndDate,
               tradeAmount: item.AuctionInfo.TradeAllowCount,
+              currentPrice: item.AuctionInfo.BidStartPrice,
             },
             arkPoint: arkOption.Value,
             itemOption: itemOptions,
